@@ -1,0 +1,17 @@
+name: Next Deployment
+
+on: 
+  push:
+    branches: [production]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-lastest
+    steps: 
+    - name: Deploy using ssh
+      uses: appleboy/ssh-action@main
+      with:
+          host: ${{secrets.}}
+          username: ${{secrets.}}
+          password: ${{secrets.}}
+          port: ${{secrets.}}
