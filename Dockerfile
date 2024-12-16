@@ -1,4 +1,4 @@
-# Sử dụng Node.js phiên bản tối ưu (ví dụ: 18-alpine)
+# Sử dụng Node.js phiên bản ổn định (ví dụ: 18-alpine)
 FROM node:18-alpine
 
 # Thiết lập thư mục làm việc bên trong container
@@ -19,5 +19,5 @@ RUN npm run build
 # Mở cổng ứng dụng (mặc định của Next.js là 3000)
 EXPOSE 3000
 
-# Lệnh khởi động ứng dụng
-CMD ["npm", "start"]
+# Lệnh để chạy ứng dụng trong chế độ production
+CMD ["npm", "run", "start"]
