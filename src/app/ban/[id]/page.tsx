@@ -12,7 +12,6 @@ import Link from "next/link";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -33,8 +32,6 @@ export default function TableDetailPage() {
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [selected, setSelected] = useState<any[]>([]);
   const [table, setTable] = useState<any>(null);
-
-  const [orderId, setOrderId] = useState("");
 
   useEffect(() => {
     const loadData = async () => {

@@ -8,7 +8,6 @@ import { History } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
