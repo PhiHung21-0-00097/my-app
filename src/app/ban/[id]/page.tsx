@@ -150,7 +150,7 @@ export default function TableDetailPage() {
       </div>
 
       {/* MENU */}
-      <div className="space-y-3 mb-4">
+      <div className="grid grid-cols-2 gap-2 my-4">
         {menu.map((item) => {
           const selectedItem = selected.find((i) => i._id === item._id);
 
