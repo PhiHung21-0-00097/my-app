@@ -93,28 +93,43 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen bg-gray-500 p-4">
       {/* Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-lg font-bold">🍽️ Otis Luxury</h1>
-        <div className="flex items-center gap-2">
-          <Badge
-            variant="outline"
-            className="rounded-full p-3 bg-blue-500 text-white"
-          >
-            {tables.length} bàn
-          </Badge>
-          {/* add iocn history */}
+      <div className="mb-8 flex items-center justify-between bg-black p-4 rounded-none border-b border-zinc-900">
+        {/* Logo Thương hiệu */}
+        <div className="flex flex-col">
+          <h1 className="text-xl font-extralight tracking-[0.3em] text-white uppercase italic">
+            Restaurant{" "}
+            <span className="font-bold not-italic text-zinc-500">Luxury</span>
+          </h1>
+          <div className="h-[1px] w-full bg-gradient-to-r from-zinc-800 to-transparent mt-1" />
+        </div>
 
+        <div className="flex items-center gap-6">
+          {/* Tổng số bàn - Badge tối giản */}
+          <div className="hidden md:flex flex-col items-end">
+            <span className="text-[10px] uppercase tracking-widest text-zinc-600 font-medium">
+              System Capacity
+            </span>
+            <span className="text-sm font-light text-white tracking-tighter">
+              {tables.length} Total Units
+            </span>
+          </div>
+
+          {/* Nút Lịch sử - Biểu tượng quyền lực */}
           <Sheet>
             <SheetTrigger asChild>
               <Button
+                variant="outline"
                 size="icon"
-                className="relative rounded-full w-10 h-10 bg-yellow-500 text-white"
+                className="relative rounded-full w-12 h-12 border-zinc-800 !bg-yellow-200 hover:bg-white hover:text-black transition-all duration-500 group"
               >
-                <History className="h-6 w-6" />
+                <History
+                  className="h-5 w-5 tracking-widest"
+                  strokeWidth={1.5}
+                />
                 {paidOrders.length > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-300 text-[9px] font-bold text-black ring-2 ring-black">
                     {paidOrders.length}
                   </span>
                 )}
@@ -123,18 +138,24 @@ export default function HomePage() {
 
             <SheetContent
               side="right"
-              className="w-full sm:max-w-md p-0 flex flex-col gap-0 border-l bg-gray-500"
+              className="w-full sm:max-w-md p-0 flex flex-col gap-0 border-l border-zinc-900 bg-[#050505] text-white"
             >
-              {/* Header cố định */}
-              <div className="p-2 text-white border-b ">
+              {/* Header Lịch sử cố định */}
+              <div className="p-2 border-b border-zinc-900 bg-black/50 backdrop-blur-md">
                 <SheetHeader className="text-left">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 border border-zinc-800 rounded-full">
+                      <Receipt
+                        className="h-5 w-5 text-zinc-400"
+                        strokeWidth={1}
+                      />
+                    </div>
                     <div>
-                      <SheetTitle className="text-xl font-bold text-white">
-                        Lịch sử thanh toán
+                      <SheetTitle className="text-lg font-extralight tracking-[0.2em] text-white uppercase">
+                        Restaurant Luxury
                       </SheetTitle>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Hóa đơn đã hoàn tất trong ngày
+                      <p className="text-[10px] text-ưhwite uppercase tracking-widest mt-1 font-light">
+                        Completed Transactions Today
                       </p>
                     </div>
                   </div>
@@ -142,108 +163,151 @@ export default function HomePage() {
               </div>
 
               {/* Danh sách cuộn */}
-              <ScrollArea className="flex-1 p-6">
-                {paidOrders.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-20 text-muted-foreground opacity-50">
-                    <Receipt className="h-12 w-12 mb-4" />
-                    <p className="text-sm">Chưa có giao dịch nào</p>
-                  </div>
-                ) : (
-                  <div className="grid gap-4">
-                    {paidOrders.map((order) => (
-                      <div
-                        key={order._id}
-                        className="group relative overflow-hidden rounded-xl border bg-card  transition-all hover:shadow-md  bg-white text-black"
-                      >
-                        {/* Dải màu trang trí bên trái */}
-                        <CardHistoryPay order={order} />
+              <div className="flex-1 overflow-hidden">
+                <ScrollArea className="h-full w-full">
+                  <div className="px-6 py-4">
+                    {paidOrders.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-32 text-zinc-700">
+                        {/* ... UI khi trống ... */}
                       </div>
-                    ))}
+                    ) : (
+                      <div className="grid gap-6">
+                        {paidOrders.map((order) => (
+                          <div
+                            key={order._id}
+                            className="group relative border border-zinc-900 p-1 transition-all duration-500 hover:border-zinc-700 bg-black"
+                          >
+                            <CardHistoryPay order={order} />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {/* Padding bottom để không bị dính sát mép */}
+                    <div className="h-20" />
                   </div>
-                )}
-              </ScrollArea>
+                </ScrollArea>
+              </div>
+
+              {/* Footer Sheet */}
+              <div className="p-6 border-t border-zinc-900 bg-black text-center">
+                <p className="text-[8px] text-zinc-600 uppercase tracking-[0.4em]">
+                  End of report
+                </p>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 p-4">
         {tables.map((table) => {
-          // 🔥 convert status → UI cũ của bạn
           const hasCustomer = table.status === "occupied";
           const isPaying = table.status === "paying";
 
-          let border = "border-gray-300";
-          let bg = "bg-white";
-          let text = "Trống";
-          let badge = "bg-gray-200 text-gray-700";
+          // Cấu hình trạng thái theo tone Luxury
+          let statusConfig = {
+            label: "Available",
+            color: "text-zinc-500",
+            dot: "bg-zinc-800",
+            accent: "border-zinc-800",
+          };
 
           if (hasCustomer) {
-            border = "border-red-400";
-            bg = "bg-red-50";
-            text = "Có khách";
-            badge = "bg-red-500 text-white";
+            statusConfig = {
+              label: "Occupied",
+              color: "text-white",
+              dot: "bg-white", // Thay vì đỏ, dùng trắng trên nền đen tạo sự quyền lực
+              accent: "border-white",
+            };
           }
 
           if (isPaying) {
-            border = "border-yellow-400";
-            bg = "bg-yellow-50";
-            text = "Tính tiền";
-            badge = "bg-yellow-400 text-black";
+            statusConfig = {
+              label: "Processing",
+              color: "text-amber-500",
+              dot: "bg-amber-500",
+              accent: "border-amber-500",
+            };
           }
 
           return (
             <div
               key={table._id}
               className={`
-                border ${border} ${bg}
-                rounded-2xl p-3
-                shadow-sm
-                active:scale-95
-                transition
-              `}
+          relative group overflow-hidden
+          border ${statusConfig.accent} 
+          ${hasCustomer ? "bg-zinc-900" : "bg-black"} 
+          rounded-none p-5
+          transition-all duration-500 ease-in-out
+          hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]
+        `}
             >
-              {/* Top */}
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="font-semibold text-sm">{table.name}</h2>
-                <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full ${badge}`}
-                >
-                  {text}
+              {/* Chỉ báo trạng thái góc nhỏ */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`h-1.5 w-1.5 rounded-full ${statusConfig.dot} animate-pulse`}
+                  />
+                  <span
+                    className={`text-[9px] uppercase tracking-[0.2em] ${statusConfig.color}`}
+                  >
+                    {statusConfig.label}
+                  </span>
+                </div>
+                <span className="text-[10px] text-zinc-600 font-light">
+                  #{table._id.slice(-3).toUpperCase()}
                 </span>
               </div>
 
-              {/* Buttons */}
-              <div className="flex gap-2 mb-2">
+              {/* Tên bàn - Typography Mercedes style */}
+              <h2 className="text-2xl font-extralight tracking-tighter text-white mb-8">
+                {table.name}
+              </h2>
+
+              {/* Hệ thống nút bấm tối giản */}
+              <div className="grid grid-cols-2 gap-px bg-zinc-800 border border-zinc-800 mb-3">
                 <button
                   onClick={() => toggleCustomer(table)}
                   disabled={loadingId === table._id}
-                  className={`flex-1 text-xs py-2 rounded-lg ${
-                    hasCustomer ? "bg-red-500 text-white" : "bg-gray-200"
-                  }`}
+                  className={`
+              py-3 text-[10px] uppercase tracking-widest transition-all
+              ${
+                hasCustomer
+                  ? "bg-white text-black font-bold"
+                  : "bg-black text-zinc-500 hover:text-white hover:bg-zinc-900"
+              }
+            `}
                 >
-                  {loadingId === table._id ? "..." : "Khách"}
+                  {loadingId === table._id ? "..." : "Guest"}
                 </button>
 
                 <button
                   onClick={() => togglePaying(table)}
                   disabled={loadingId === table._id}
-                  className={`flex-1 text-xs py-2 rounded-lg ${
-                    isPaying ? "bg-yellow-400 text-black" : "bg-gray-200"
-                  }`}
+                  className={`
+              py-3 text-[10px] uppercase tracking-widest transition-all
+              ${
+                isPaying
+                  ? "bg-amber-500 text-black font-bold"
+                  : "bg-black text-zinc-500 hover:text-white hover:bg-zinc-900"
+              }
+            `}
                 >
-                  {loadingId === table._id ? "..." : "Tính tiền"}
+                  {loadingId === table._id ? "..." : "Settle"}
                 </button>
               </div>
 
-              {/* Xem */}
-              <Button
-                className="w-full h-9 text-sm rounded-xl"
+              {/* Nút Xem chi tiết - Trong suốt & Tinh tế */}
+              <button
+                className="w-full py-2 text-[9px] uppercase tracking-[0.3em] text-zinc-400 border border-zinc-900 hover:border-zinc-500 hover:text-white transition-all"
                 onClick={() => router.push(`/ban/${table._id}`)}
               >
-                Xem
-              </Button>
+                View Details
+              </button>
+
+              {/* Hiệu ứng đường kẻ mờ khi hover */}
+              <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all duration-500 group-hover:w-full" />
             </div>
           );
         })}

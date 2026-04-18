@@ -7,7 +7,7 @@ import { formatVND } from "@/utils";
 import toast from "react-hot-toast";
 import { OrderAPI } from "@/lib/orders/orders.api";
 import { MenuAPI } from "@/lib/menu/menu.api";
-import { SkipBack } from "lucide-react";
+import { Receipt, SkipBack } from "lucide-react";
 import Link from "next/link";
 import {
   Dialog,
@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { TableAPI } from "@/lib/tables/table.api";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type MenuItem = {
   _id: string;
@@ -137,139 +138,217 @@ export default function TableDetailPage() {
   const QRURL = `https://img.vietqr.io/image/TPB-0943244904-compact2.png?amount=${total}&addInfo=Thanh Toan ${table?.name} &accountName=NGUYEN%20HOANG%20PHI%20HUNG`;
 
   return (
-    <div className="p-4 bg-gray-100 min-h-screen">
-      <div className="flex items-center justify-between">
-        {/* add icon back */}
-        <Link href={"/trang-chu"}>
-          <SkipBack />
+    <div className="p-6 bg-[#050505] min-h-screen text-white antialiased">
+      {/* Header: Trở về & Tên bàn */}
+      <div className="flex items-center justify-between mb-10">
+        <Link
+          href={"/trang-chu"}
+          className="group flex items-center gap-2 text-zinc-500 hover:text-white transition-colors"
+        >
+          <div className="p-2 border border-zinc-900 rounded-full group-hover:border-zinc-500 transition-all">
+            <SkipBack className="w-4 h-4" />
+          </div>
+          <span className="text-[10px] uppercase tracking-[0.2em]">
+            Quay lại
+          </span>
         </Link>
 
-        <h1 className="text-lg font-bold ">
-          🪑 {table?.name || "Đang tải..."}
-        </h1>
-      </div>
-
-      {/* MENU */}
-      <div className="grid grid-cols-2 gap-2 my-4">
-        {menu.map((item) => {
-          const selectedItem = selected.find((i) => i._id === item._id);
-
-          return (
-            <div
-              key={item._id}
-              className="bg-white p-3 rounded-xl shadow flex justify-between items-center"
-            >
-              <div>
-                <p className="font-medium">{item.name}</p>
-                <p className="text-sm text-gray-500">{formatVND(item.price)}</p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => removeItem(item)}
-                  className="px-2 bg-gray-200 rounded"
-                >
-                  -
-                </button>
-
-                <span>{selectedItem?.quantity || 0}</span>
-
-                <button
-                  onClick={() => addItem(item)}
-                  className="px-2 bg-green-500 text-white rounded"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* BILL */}
-      <div className="bg-white p-4 rounded-xl shadow mb-4">
-        <h2 className="font-bold mb-2">🧾 Hoá đơn</h2>
-
-        {selected.map((i, index) => (
-          <div key={index} className="flex justify-between text-sm">
-            <span>
-              {i.name} x{i.quantity}
-            </span>
-            <span>{formatVND(i.price * i.quantity)}</span>
-          </div>
-        ))}
-
-        <div className="mt-2 font-bold flex justify-between">
-          <span>Tổng</span>
-          <span>{formatVND(total)}</span>
+        <div className="text-right">
+          <h1 className="mb-2 text-2xl font-extralight tracking-widest uppercase italic">
+            {table?.name || "Loading..."}
+          </h1>
+          <p className="text-[9px] text-zinc-600 uppercase tracking-[0.4em]">
+            Restaurant Luxury
+          </p>
         </div>
       </div>
 
-      {/* ACTION */}
-      <div className="flex gap-2">
-        <Button className="flex-1" onClick={handleSave}>
-          {loading ? "Đang lưu" : "Lưu"}
-        </Button>
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* CỘT 1 & 2: THỰC ĐƠN (MENU) */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex items-center gap-4 mb-4">
+            <h2 className="text-[11px] uppercase tracking-[0.5em] text-zinc-500 font-bold">
+              Thực đơn tinh hoa
+            </h2>
+            <div className="h-[1px] flex-1 bg-zinc-900" />
+          </div>
 
-        <Button
-          className="flex-1 bg-yellow-400 text-black"
-          onClick={() => setOpen(true)}
-        >
-          Thanh toán
-        </Button>
-      </div>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="rounded-2xl max-w-md bg-gray-500">
-          <DialogHeader>
-            <DialogTitle className="text-center text-lg">
-              🧾 Hoá đơn
-            </DialogTitle>
-          </DialogHeader>
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
+            {menu.map((item) => {
+              const selectedItem = selected.find((i) => i._id === item._id);
+              return (
+                <div
+                  key={item._id}
+                  className="group relative bg-black border border-zinc-900 p-4 transition-all duration-500 hover:border-zinc-600"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <p className="text-sm font-light tracking-wide text-zinc-200 group-hover:text-white">
+                        {item.name}
+                      </p>
+                      <p className="text-[11px] text-zinc-600 mt-1 font-mono tracking-tighter italic">
+                        {formatVND(item.price)}
+                      </p>
+                    </div>
 
-          {/* LIST MÓN */}
-          <div className="space-y-2 max-h-[300px] overflow-y-auto">
-            {selected.map((item, i) => (
-              <div
-                key={i}
-                className="flex justify-between text-sm border-b pb-1"
-              >
-                <span>
-                  {item.name} x{item.quantity}
+                    <div className="flex items-center border border-zinc-800 bg-zinc-950 px-1 py-1">
+                      <button
+                        onClick={() => removeItem(item)}
+                        className="w-8 h-8 flex items-center justify-center text-zinc-600 hover:text-white transition-colors"
+                      >
+                        —
+                      </button>
+                      <span className="w-8 text-center text-[10px] font-bold text-white">
+                        {selectedItem?.quantity || 0}
+                      </span>
+                      <button
+                        onClick={() => addItem(item)}
+                        className="w-8 h-8 flex items-center justify-center text-zinc-300 hover:text-white transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* CỘT 3: TÓM TẮT HOÁ ĐƠN (BILL) */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-6 flex flex-col h-fit border border-zinc-800 bg-zinc-950 p-6">
+            <div className="flex items-center gap-3 mb-8">
+              <Receipt className="w-4 h-4 text-zinc-500" strokeWidth={1} />
+              <h2 className="text-[11px] uppercase tracking-[0.4em] text-white">
+                Digital Ledger
+              </h2>
+            </div>
+
+            <ScrollArea className="flex-1 max-h-[400px] mb-6 pr-4">
+              {selected.length === 0 ? (
+                <p className="text-[10px] text-zinc-700 uppercase tracking-widest text-center py-10 italic">
+                  Chưa chọn món...
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {selected.map((i, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-end border-b border-zinc-900 pb-2"
+                    >
+                      <div className="flex-1">
+                        <p className="text-[11px] text-zinc-300">{i.name}</p>
+                        <p className="text-[9px] text-zinc-600">
+                          SL: {i.quantity}
+                        </p>
+                      </div>
+                      <span className="text-[11px] font-mono text-zinc-400">
+                        {formatVND(i.price * i.quantity)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </ScrollArea>
+
+            <div className="border-t border-zinc-800 pt-6 mb-8">
+              <div className="flex justify-between items-end">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-zinc-600">
+                  Tổng cộng
                 </span>
-                <span className="font-medium">
-                  {formatVND(item.price * item.quantity)}
+                <span className="text-2xl font-extralight tracking-tighter text-white">
+                  {formatVND(total)}
                 </span>
               </div>
-            ))}
-          </div>
+            </div>
 
-          {/* TOTAL */}
-          <div className="flex justify-between font-bold text-lg mt-3 border-t pt-2">
-            <span>Tổng</span>
-            <span className="text-green-600">{formatVND(total)}</span>
-          </div>
-          {/* 🔥 QR CODE */}
-          <div className="mt-4 flex flex-col items-center gap-2">
-            <p className="text-sm text-gray-500">Quét mã để thanh toán</p>
-
-            <div className="bg-white p-3 rounded-xl shadow">
-              <img src={QRURL} alt="QR Thanh toán" className="w-80 h-80" />
+            <div className="grid gap-3">
+              <button
+                onClick={handleSave}
+                disabled={loading}
+                className="w-full py-4 text-[10px] uppercase tracking-[0.3em] border border-zinc-800 hover:bg-zinc-900 transition-all text-zinc-400"
+              >
+                {loading ? "Synchronizing..." : "Update Order"}
+              </button>
+              <button
+                onClick={() => setOpen(true)}
+                className="w-full py-4 text-[10px] uppercase tracking-[0.3em] bg-white text-black font-bold hover:bg-zinc-200 transition-all"
+              >
+                Settle Invoice
+              </button>
             </div>
           </div>
-          {/* ACTION */}
-          <DialogFooter className="flex flex-row justify-end gap-2 mt-4">
+        </div>
+      </div>
+
+      {/* DIALOG THANH TOÁN - LUXURY QR */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-md bg-black border border-zinc-800 p-0 overflow-hidden">
+          <div className="p-8 border-b border-zinc-900 bg-zinc-950">
+            <DialogHeader>
+              <DialogTitle className="text-center text-[13px] uppercase tracking-[0.5em] text-white">
+                Final Settlement
+              </DialogTitle>
+            </DialogHeader>
+          </div>
+
+          <div className="p-8 space-y-6">
+            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
+              {selected.map((item, i) => (
+                <div
+                  key={i}
+                  className="flex justify-between text-[11px] border-b border-zinc-900 pb-2 italic"
+                >
+                  <span className="text-zinc-500">
+                    {item.name} x{item.quantity}
+                  </span>
+                  <span className="text-zinc-300">
+                    {formatVND(item.price * item.quantity)}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-between items-center border-t border-zinc-800 pt-4">
+              <span className="text-[10px] uppercase tracking-widest text-zinc-600">
+                Total Amount
+              </span>
+              <span className="text-xl font-bold text-white">
+                {formatVND(total)}
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center gap-4 py-4">
+              <p className="text-[9px] uppercase tracking-[0.3em] text-zinc-500">
+                Scan for secure payment
+              </p>
+              <div className="relative group p-4 bg-white rounded-none">
+                <img
+                  src={QRURL}
+                  alt="QR"
+                  className="w-64 h-64 grayscale hover:grayscale-0 transition-all duration-700"
+                />
+                <div className="absolute inset-0 border-[20px] border-white pointer-events-none" />
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 bg-zinc-950 flex gap-4">
             <Button
               variant="outline"
-              className=""
+              className="flex-1 rounded-none border-zinc-800 text-[10px] uppercase tracking-widest hover:bg-zinc-900"
               onClick={() => setOpen(false)}
             >
-              Huỷ
+              Cancel
             </Button>
-
-            <Button className=" bg-green-600" onClick={handlePay}>
-              Xác nhận
+            <Button
+              className="flex-1 rounded-none bg-white text-black font-bold text-[10px] uppercase tracking-widest hover:bg-zinc-200"
+              onClick={handlePay}
+            >
+              Confirm Payment
             </Button>
-          </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

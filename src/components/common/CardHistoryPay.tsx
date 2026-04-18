@@ -31,7 +31,7 @@ export default function CardHistoryPay({ order }: { order: any }) {
   }, [order.tableId]);
 
   return (
-    <div className="group relative overflow-hidden rounded-xl border bg-card p-4 transition-all hover:shadow-md">
+    <div className="group relative overflow-hidden rounded-xl border bg-white p-4 transition-all hover:shadow-md">
       <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600" />
 
       <div className="flex justify-between items-start gap-4">
